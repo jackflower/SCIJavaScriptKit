@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Szczecińskie Collegium Infrmatyczne SCI 2020</title>
+  <script charset="utf-8" src="timer.js"></script>
+  <script charset="utf-8" src="physical.js"></script>
+  
+  <script>
+    var fpsCount = 0;
+    var fps = 0;
+    var startTime = 0;
+
+    window.onload = function() {
+
+        var canvas = document.getElementById('myCanvas');
+        var c = canvas.getContext('2d');
+        // Inicjuje duszki
+        var spritesheet_robot = 'robot.png';
+        
+        var robot = new Physical(spritesheet_robot, 64, 64, 0, 0, 16, 1000);
+        var destroyer = new Physical(spritesheet_robot, 64, 64, 0, 0, 16, 1000);
+        var warrior = new Physical(spritesheet_robot, 64, 64, 0, 0, 16, 1000);
+        
+        //obiekt klasy timera, której kod zostanie opakowany do osobnej klasy (plik)
+        var timer = new Timer();
+
+        c.font = '14px _sans';
+        var startTime = timer.getSeconds();
+
+        //metoda rysująca...
+        draw(startTime);
+	
+        function draw (timeStamp) {
+        timer.update();
+        if (timeStamp !== timer.getSeconds()) {
+            fps = fpsCount;
+            fpsCount = 0;
+        } else
+            fpsCount++;
+
+        c.fillStyle = '#FFFFFF';
+        c.fillRect (0, 0, canvas.width, canvas.height);
+        c.fillStyle = '#000000';
+        
+        robot.setPosition(40, 60);
+        robot.animate(timer);
+        robot.draw(c);
+        
+        destroyer.setPosition(120, 60);
+        destroyer.animate(timer);
+        destroyer.draw(c);
+        
+        warrior.setPosition(200, 60);
+        warrior.animate(timer);
+        warrior.draw(c);
+
+        c.fillText ("Czas: " + (timeStamp - startTime) + " s", 10, 20);
+        c.fillText ("FPS: " + fps, 10, 40);
+	
+        setTimeout(function() {
+            draw(timer.getSeconds());
+        }, 1);
+
+        }
+    };
+  </script>
+
+</head>
+<body>
+  <canvas id="myCanvas" width="300" height="300" style="border: 1px solid black;">
+  <!--<canvas id="myCanvas" width="300" height="300">-->
+	 Twoja przeglądarka nie obsługuje znacznika canvas.
+  </canvas>
+</body>
+</html>
